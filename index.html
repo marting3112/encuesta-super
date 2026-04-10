@@ -30,8 +30,8 @@ body::before { content: ''; position: fixed; inset: 0; background: radial-gradie
 .candy-icons { font-size: 26px; margin-bottom: 1rem; letter-spacing: 6px; }
 
 /* Progress */
-.progress-bar { background: white; border-radius: 20px; border: 2px solid var(--border); padding: 12px 18px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 12px rgba(232,53,74,0.06); }
-.progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; }
+.progress-bar { position: fixed; bottom: 24px; right: 24px; z-index: 999; background: white; border-radius: 50px; border: 2px solid var(--border); padding: 10px 18px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(232,53,74,0.18); min-width: 180px; }
+.progress-track { flex: 1; height: 7px; background: var(--border); border-radius: 10px; overflow: hidden; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--orange)); border-radius: 10px; transition: width 0.5s ease; }
 .progress-label { font-size: 12px; font-weight: 700; color: var(--red); white-space: nowrap; }
 
@@ -99,11 +99,6 @@ select:focus, input[type="text"]:focus { outline: none; border-color: var(--red)
 .lugar-card.selected { border-color: var(--mint); background: linear-gradient(135deg, #E0F9F5, #CCFAF2); color: #007A68; box-shadow: 0 6px 16px rgba(0,187,212,0.14); }
 
 /* Ref box */
-.ref-box { border: 2px dashed var(--orange); border-radius: 16px; padding: 14px 16px; margin-bottom: 1.25rem; background: linear-gradient(135deg, #FFFBF0, #FFF6E0); }
-.ref-title { font-family: 'Fredoka One', cursive; font-size: 13px; color: var(--orange); margin-bottom: 10px; }
-.ref-cats { display: flex; flex-wrap: wrap; gap: 10px; }
-.ref-cat { font-size: 12px; color: var(--muted); }
-.ref-cat strong { display: block; font-weight: 700; color: var(--text); margin-bottom: 2px; font-size: 12px; }
 
 /* Rangos */
 .rango-block { border: 2px solid var(--border); border-radius: 18px; margin-bottom: 10px; overflow: hidden; }
@@ -289,11 +284,7 @@ select:focus, input[type="text"]:focus { outline: none; border-color: var(--red)
     <div class="section-card">
       <div class="section-label">🎯 Sección 7</div>
       <div class="section-title">9. ¿Qué producto compraría con su devuelta?</div>
-      <p class="hint">Teniendo en cuenta las categorías de confitería, si tuviera estas devueltas, ¿qué compraría?</p>
-      <div class="ref-box">
-        <div class="ref-title">📋 Referencia de categorías y productos</div>
-        <div class="ref-cats" id="ref-cats"></div>
-      </div>
+      <p class="hint">Para cada valor de devuelta, selecciona el producto que comprarías. Los productos están agrupados por categoría.</p>
       <div id="rangos-container"></div>
     </div>
 
@@ -341,27 +332,32 @@ const categorias={
 const rangos=['$100 – $200','$300 – $400','$500 – $600','$700 – $800','$900 – $1.000'];
 const precios=['$100 – $200','$300 – $400','$500 – $600','$700 – $800','$900 – $1.000'];
 const coins=['$100','$200','$500','$1.000'];
-const coinOpts=['Compro un confite','La ahorro','Compro una chocolatina','Compro una galleta','Compro un bocadillo / arequipe'];
+const coinOptsMap={
+  '$100':  ['Compro un confite','La ahorro','Compro otro tipo de comestible'],
+  '$200':  ['Compro un confite','La ahorro','Compro otro tipo de comestible'],
+  '$500':  ['Compro un confite','La ahorro','Compro una chocolatina','Compro una galleta','Compro un bocadillo / arequipe','Compro otro tipo de comestible'],
+  '$1.000':['Compro un confite','La ahorro','Compro una chocolatina','Compro una galleta','Compro un bocadillo / arequipe','Compro otro tipo de comestible']
+};
 const grupos=[
   {label:'Grupo 1',prods:['Lokiño','Yogger','Chao','Panelita pequeña','Cocada pequeña']},
   {label:'Grupo 2',prods:['Bigben','Halls','Supercoco','Ricatto']},
   {label:'Grupo 3',prods:['Bon bon bum','Chocolatina pequeña']},
-  {label:'Grupo 4',prods:['Chocolatina mediana','Burbujét','Galletas','Refresco pequeño']}
+  {label:'Grupo 4',prods:['Chocolatina mediana','Burbuja jet','Galletas','Refresco pequeño']}
 ];
-
-// Build ref cats
-const refCats=document.getElementById('ref-cats');
-Object.values(categorias).forEach(({nombre,prods})=>{
-  const d=document.createElement('div');d.className='ref-cat';
-  d.innerHTML=`<strong>${nombre}</strong>${prods.join(', ')}`;
-  refCats.appendChild(d);
-});
 
 // Build coins
 const coinsC=document.getElementById('coins-container');
 coins.forEach(coin=>{
+  const opts=coinOptsMap[coin];
+  const coinId=coin.replace('$','').replace('.','');
   const block=document.createElement('div');block.className='coin-block';
-  block.innerHTML=`<div class="coin-header"><span class="coin-badge">${coin}</span><span class="coin-q">¿Qué hace con esta devuelta?</span></div><div class="coin-opts">${coinOpts.map(op=>`<div class="resp-opt" onclick="selectCoin(this,'${coin}')"><div class="resp-dot"></div>${op}</div>`).join('')}</div><input type="hidden" name="devuelta_${coin.replace('.','')}" id="coin-${coin.replace('.','')}-val">`;
+  let optsHTML='';
+  opts.forEach(function(op){
+    var isOtro=(op==='Compro otro tipo de comestible');
+    optsHTML+='<div class="resp-opt" onclick="selectCoin(this,\''+coin+'\''+(isOtro?',\'otro-'+coinId+'\'':'')+')"><div class="resp-dot"></div>'+op+'</div>';
+    if(isOtro) optsHTML+='<div class="otra-input" id="otro-'+coinId+'"><input type="text" name="devuelta_'+coinId+'_otro" placeholder="¿Qué comestible comprarías?"></div>';
+  });
+  block.innerHTML='<div class="coin-header"><span class="coin-badge">'+coin+'</span><span class="coin-q">¿Qué hace con esta devuelta?</span></div><div class="coin-opts">'+optsHTML+'</div><input type="hidden" name="devuelta_'+coinId+'" id="coin-'+coinId+'-val">';
   coinsC.appendChild(block);
 });
 
@@ -373,7 +369,7 @@ rangos.forEach((rango,i)=>{
   let opts=`<option value="" disabled selected>Selecciona un producto</option>`;
   let cur='';
   allProds.forEach(({nombre,p})=>{
-    if(nombre!==cur){if(cur)opts+=`</optgroup>`;opts+=`<optgroup label="${nombre}">`;cur=nombre;}
+    if(nombre!==cur){if(cur)opts+=`</optgroup>`;opts+=`<optgroup label="── ${nombre} ──">`;cur=nombre;}
     opts+=`<option value="${p}">${p}</option>`;
   });
   opts+=`</optgroup>`;
@@ -451,12 +447,16 @@ function selectCat(el,key){
   updateProgress();
 }
 
-function selectCoin(el,coin){
+function selectCoin(el,coin,otroId){
   el.closest('.coin-opts').querySelectorAll('.resp-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
-  const id='coin-'+coin.replace('.','')+'-val';
-  const hidden=document.getElementById(id);
+  const coinId=coin.replace('$','').replace('.','');
+  const hidden=document.getElementById('coin-'+coinId+'-val');
   if(hidden) hidden.value=el.textContent.trim();
+  // show/hide otro field
+  const allOtro=el.closest('.coin-opts').parentElement.querySelectorAll('.otra-input');
+  allOtro.forEach(o=>o.classList.remove('visible'));
+  if(otroId && document.getElementById(otroId)) document.getElementById(otroId).classList.add('visible');
   updateProgress();
 }
 
