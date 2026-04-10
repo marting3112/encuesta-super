@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta · SÚPER Confitería</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E8354A; --orange: #FF6B35; --yellow: #FFD93D;
+  --purple: #9B5DE5; --mint: #00BBD4; --green: #06D6A0;
+  --pink: #F7A8B8; --bg: #FFF8F0; --card: #FFFFFF;
+  --text: #2D1B0E; --muted: #7A5C4A; --border: #F0DDD0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 10% 15%, rgba(247,168,184,0.2) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255,217,61,0.15) 0%, transparent 40%), radial-gradient(circle at 80% 10%, rgba(155,93,229,0.1) 0%, transparent 35%), radial-gradient(circle at 20% 85%, rgba(6,214,160,0.1) 0%, transparent 35%); pointer-events: none; z-index: 0; }
+.dots { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.dot { position: absolute; border-radius: 50%; opacity: 0.12; animation: floatUp linear infinite; }
+@keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-20vh) rotate(360deg); } }
+.wrapper { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+/* Header */
+.survey-header { text-align: center; padding: 2.5rem 2rem 2rem; background: var(--card); border-radius: 28px; border: 2px solid var(--border); margin-bottom: 1.25rem; position: relative; overflow: hidden; box-shadow: 0 4px 24px rgba(232,53,74,0.08); }
+.survey-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #E8354A, #FF6B35, #FFD93D, #06D6A0, #00BBD4, #9B5DE5, #F7A8B8); }
+.brand-tag { display: inline-block; background: var(--red); color: white; font-family: 'Fredoka One', cursive; font-size: 12px; letter-spacing: 2px; padding: 4px 16px; border-radius: 20px; margin-bottom: 1rem; text-transform: uppercase; }
+.survey-header h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 5vw, 2.8rem); color: var(--red); line-height: 1.1; margin-bottom: 0.75rem; }
+.survey-header h1 span { color: var(--orange); }
+.survey-header p { font-size: 14px; color: var(--muted); max-width: 400px; margin: 0 auto; line-height: 1.7; }
+.candy-icons { font-size: 26px; margin-bottom: 1rem; letter-spacing: 6px; }
+
+/* Progress */
+.progress-bar { background: white; border-radius: 20px; border: 2px solid var(--border); padding: 12px 18px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 12px rgba(232,53,74,0.06); }
+.progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--orange)); border-radius: 10px; transition: width 0.5s ease; }
+.progress-label { font-size: 12px; font-weight: 700; color: var(--red); white-space: nowrap; }
+
+/* Cards */
+.section-card { background: var(--card); border-radius: 24px; border: 2px solid var(--border); padding: 1.75rem; margin-bottom: 1.25rem; box-shadow: 0 4px 24px rgba(232,53,74,0.06); }
+.section-label { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--red), var(--orange)); color: white; font-family: 'Fredoka One', cursive; font-size: 12px; padding: 4px 14px; border-radius: 20px; margin-bottom: 0.75rem; }
+.section-title { font-family: 'Fredoka One', cursive; font-size: 1.25rem; color: var(--text); margin-bottom: 1.25rem; line-height: 1.3; }
+.question-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 7px; display: block; }
+.hint { font-size: 12px; color: #B09080; margin-bottom: 10px; }
+.field { margin-bottom: 1.25rem; }
+
+select, input[type="text"] { width: 100%; height: 44px; padding: 0 14px; border: 2px solid var(--border); border-radius: 14px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); background: #FFFCFA; transition: border-color 0.2s; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E8354A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+input[type="text"] { background-image: none; }
+select:focus, input[type="text"]:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,53,74,0.1); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Pills */
+.pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { padding: 8px 16px; border: 2px solid var(--border); border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--muted); background: #FFFCFA; cursor: pointer; transition: all 0.18s; user-select: none; }
+.pill:hover { border-color: var(--pink); color: var(--red); }
+.pill.selected { background: var(--red); border-color: var(--red); color: white; transform: scale(1.04); }
+.pill.multi.selected { background: var(--orange); border-color: var(--orange); color: white; }
+
+/* Estrato */
+.estrato-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.estrato-pill { width: 44px; height: 44px; border: 2px solid var(--border); border-radius: 50%; font-size: 15px; font-weight: 700; color: var(--muted); background: #FFFCFA; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; user-select: none; }
+.estrato-pill:hover { border-color: var(--pink); color: var(--red); }
+.estrato-pill.selected { background: var(--red); border-color: var(--red); color: white; transform: scale(1.08); }
+
+/* Categories */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 10px; }
+.cat-card { padding: 14px 10px; border: 2px solid var(--border); border-radius: 18px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--muted); background: #FFFCFA; transition: all 0.2s; user-select: none; line-height: 1.4; }
+.cat-card .cat-icon { font-size: 22px; display: block; margin-bottom: 6px; }
+.cat-card:hover { border-color: var(--pink); transform: translateY(-2px); }
+.cat-card.selected { border-color: var(--orange); background: linear-gradient(135deg, #FFF3E0, #FFE0B2); color: var(--orange); transform: translateY(-3px); box-shadow: 0 6px 16px rgba(255,107,53,0.18); }
+.submenu { margin-top: 1rem; display: none; }
+.submenu.visible { display: block; }
+.submenu-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; padding: 8px 14px; background: linear-gradient(135deg, #FFF3E0, #FFF8F0); border-radius: 12px; border-left: 3px solid var(--orange); }
+
+/* Marcas */
+.marca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.marca-card { padding: 18px 14px; border: 2px solid var(--border); border-radius: 18px; text-align: center; cursor: pointer; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--muted); background: #FFFCFA; transition: all 0.2s; user-select: none; }
+.marca-card .marca-sub { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 600; color: #B09080; margin-top: 4px; }
+.marca-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+.marca-card.selected { border-color: var(--purple); background: linear-gradient(135deg, #F3E8FF, #EDD9FF); color: var(--purple); box-shadow: 0 6px 16px rgba(155,93,229,0.18); }
+.marca-card.selected .marca-sub { color: var(--purple); }
+
+/* Coins */
+.coin-block { border: 2px solid var(--border); border-radius: 18px; margin-bottom: 10px; overflow: hidden; }
+.coin-header { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: linear-gradient(135deg, #FFF9E6, #FFF3CC); border-bottom: 2px solid var(--border); }
+.coin-badge { background: var(--yellow); color: #7A5000; font-family: 'Fredoka One', cursive; font-size: 15px; padding: 3px 14px; border-radius: 20px; }
+.coin-q { font-size: 13px; font-weight: 600; color: var(--muted); }
+.coin-opts { padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; }
+.resp-opt { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border: 2px solid var(--border); border-radius: 13px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); background: #FFFCFA; transition: all 0.18s; user-select: none; }
+.resp-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.18s; }
+.resp-opt:hover { border-color: var(--mint); color: var(--text); }
+.resp-opt.selected { border-color: var(--mint); background: linear-gradient(135deg, #E0F9F5, #CCFAF2); color: #007A68; }
+.resp-opt.selected .resp-dot { background: var(--green); border-color: var(--green); }
+
+/* Lugares */
+.lugar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.lugar-card { padding: 16px 14px; border: 2px solid var(--border); border-radius: 18px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--muted); background: #FFFCFA; transition: all 0.2s; user-select: none; }
+.lugar-card .lugar-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+.lugar-card:hover { border-color: var(--mint); transform: translateY(-2px); }
+.lugar-card.selected { border-color: var(--mint); background: linear-gradient(135deg, #E0F9F5, #CCFAF2); color: #007A68; box-shadow: 0 6px 16px rgba(0,187,212,0.14); }
+
+/* Ref box */
+.ref-box { border: 2px dashed var(--orange); border-radius: 16px; padding: 14px 16px; margin-bottom: 1.25rem; background: linear-gradient(135deg, #FFFBF0, #FFF6E0); }
+.ref-title { font-family: 'Fredoka One', cursive; font-size: 13px; color: var(--orange); margin-bottom: 10px; }
+.ref-cats { display: flex; flex-wrap: wrap; gap: 10px; }
+.ref-cat { font-size: 12px; color: var(--muted); }
+.ref-cat strong { display: block; font-weight: 700; color: var(--text); margin-bottom: 2px; font-size: 12px; }
+
+/* Rangos */
+.rango-block { border: 2px solid var(--border); border-radius: 18px; margin-bottom: 10px; overflow: hidden; }
+.rango-header { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: linear-gradient(135deg, #FDE8EC, #FCCDD4); border-bottom: 2px solid var(--border); }
+.rango-badge { background: var(--red); color: white; font-family: 'Fredoka One', cursive; font-size: 14px; padding: 3px 14px; border-radius: 20px; }
+.rango-q { font-size: 13px; font-weight: 600; color: var(--muted); }
+.rango-body { padding: 12px 16px; }
+
+/* Grupos precio */
+.grupo-block { border: 2px solid var(--border); border-radius: 18px; margin-bottom: 12px; overflow: hidden; }
+.grupo-header { padding: 10px 16px; background: linear-gradient(135deg, #F0E8FF, #E8D9FF); border-bottom: 2px solid var(--border); font-family: 'Fredoka One', cursive; font-size: 14px; color: var(--purple); }
+.grupo-body { padding: 8px 16px 12px; }
+.prod-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--border); }
+.prod-row:last-child { border-bottom: none; }
+.prod-name { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+.prod-select { min-width: 150px; height: 38px; padding: 0 30px 0 12px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); background: #FFFCFA; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239B5DE5' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; }
+.prod-select:focus { outline: none; border-color: var(--purple); }
+
+/* Submit */
+.submit-wrap { text-align: center; padding-top: 1rem; }
+.btn-submit { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--red), var(--orange)); color: white; font-family: 'Fredoka One', cursive; font-size: 1.1rem; padding: 16px 42px; border-radius: 50px; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 6px 20px rgba(232,53,74,0.3); }
+.btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(232,53,74,0.4); }
+.btn-submit:active { transform: scale(0.97); }
+
+.otra-input { margin-top: 8px; display: none; }
+.otra-input.visible { display: block; }
+
+.success-screen { display: none; text-align: center; padding: 3rem 2rem; background: var(--card); border-radius: 28px; border: 2px solid var(--border); box-shadow: 0 4px 24px rgba(6,214,160,0.1); }
+.success-screen.visible { display: block; }
+.success-icon { font-size: 56px; margin-bottom: 1rem; }
+.success-screen h2 { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--green); margin-bottom: 0.75rem; }
+.success-screen p { font-size: 15px; color: var(--muted); }
+
+@media (max-width: 480px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="dots" id="dots"></div>
+
+<div class="wrapper">
+
+  <div class="survey-header">
+    <div class="candy-icons">🍬🍭🍫🍡🍩</div>
+    <div class="brand-tag">SÚPER · Estudio de Pricing 2026</div>
+    <h1>Encuesta de <span>Confitería</span></h1>
+    <p>Tu opinión nos ayuda a entender mejor cómo disfrutas los dulces. ¡Solo toma unos minutos!</p>
+  </div>
+
+  <div class="progress-bar">
+    <span class="progress-label" id="progress-label">Completado: 0%</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <form id="survey-form" action="https://formspree.io/f/TUCODIGO" method="POST">
+
+    <!-- S1 -->
+    <div class="section-card">
+      <div class="section-label">🎯 Sección 1</div>
+      <div class="section-title">Datos de identificación</div>
+      <div class="two-col">
+        <div class="field">
+          <label class="question-label">1. Edad</label>
+          <select name="edad">
+            <option value="" disabled selected>Selecciona un rango</option>
+            <option>Menos de 18 años</option>
+            <option>18 – 25 años</option>
+            <option>26 – 35 años</option>
+            <option>36 – 45 años</option>
+            <option>46 – 55 años</option>
+            <option>Más de 55 años</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="question-label">2. Género</label>
+          <select name="genero">
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option>Masculino</option>
+            <option>Femenino</option>
+            <option>No binario / otro</option>
+            <option>Prefiero no decir</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label class="question-label">3. Ciudad de residencia</label>
+          <input type="text" name="ciudad" placeholder="Ej: Medellín">
+        </div>
+        <div class="field">
+          <label class="question-label">4. Estrato socioeconómico</label>
+          <div class="estrato-group">
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">1</div>
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">2</div>
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">3</div>
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">4</div>
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">5</div>
+            <div class="estrato-pill" onclick="selectOne(this,'estrato')">6</div>
+          </div>
+          <input type="hidden" name="estrato" id="estrato-val">
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="section-card">
+      <div class="section-label">💳 Sección 2</div>
+      <div class="section-title">¿Cuál es su manera habitual de pago?</div>
+      <p class="hint">Puedes seleccionar varias opciones</p>
+      <div class="pill-group">
+        <div class="pill multi" onclick="toggleMulti(this,'pago-val','Efectivo')">Efectivo</div>
+        <div class="pill multi" onclick="toggleMulti(this,'pago-val','Tarjeta')">Tarjeta</div>
+        <div class="pill multi" onclick="toggleMulti(this,'pago-val','Transferencia')">Transferencia</div>
+        <div class="pill multi" onclick="toggleOtra(this,'otra-pago','pago-val','Otra')">Otra</div>
+      </div>
+      <div class="otra-input" id="otra-pago">
+        <input type="text" name="pago_otro" placeholder="¿Cuál método de pago?">
+      </div>
+      <input type="hidden" name="metodo_pago" id="pago-val">
+    </div>
+
+    <!-- S3 -->
+    <div class="section-card">
+      <div class="section-label">🍬 Sección 3</div>
+      <div class="section-title">5. Seleccione la categoría de confite que más le guste</div>
+      <p class="hint">Selecciona una categoría para ver los productos disponibles</p>
+      <div class="cat-grid">
+        <div class="cat-card" onclick="selectCat(this,'bombon-chicle')"><span class="cat-icon">🍭</span>Bombón con chicle</div>
+        <div class="cat-card" onclick="selectCat(this,'caramelo-leche')"><span class="cat-icon">🍮</span>Caramelo de leche</div>
+        <div class="cat-card" onclick="selectCat(this,'bombon-sin-chicle')"><span class="cat-icon">🫧</span>Bombón sin chicle</div>
+        <div class="cat-card" onclick="selectCat(this,'caramelo-duro')"><span class="cat-icon">💎</span>Caramelo duro</div>
+        <div class="cat-card" onclick="selectCat(this,'caramelo-masticable')"><span class="cat-icon">🌀</span>Caramelo masticable</div>
+        <div class="cat-card" onclick="selectCat(this,'mentas')"><span class="cat-icon">🌿</span>Mentas</div>
+        <div class="cat-card" onclick="selectCat(this,'turrones')"><span class="cat-icon">🍯</span>Turrones</div>
+      </div>
+      <div class="submenu" id="submenu">
+        <p class="submenu-label">¿Cuál es tu producto favorito en esta categoría?</p>
+        <div class="pill-group" id="prod-group"></div>
+      </div>
+      <input type="hidden" name="categoria" id="cat-val">
+      <input type="hidden" name="producto_favorito" id="prod-val">
+    </div>
+
+    <!-- S4 -->
+    <div class="section-card">
+      <div class="section-label">⭐ Sección 4</div>
+      <div class="section-title">6. ¿Cuál es su marca preferida en confitería?</div>
+      <p class="hint">Selecciona solo una opción</p>
+      <div class="marca-grid">
+        <div class="marca-card" onclick="selectMarca(this)">SÚPER<div class="marca-sub">Industria de Alimentos SÚPER</div></div>
+        <div class="marca-card" onclick="selectMarca(this)">Aldor<div class="marca-sub">Aldor S.A.</div></div>
+        <div class="marca-card" onclick="selectMarca(this)">Colombina<div class="marca-sub">Colombina S.A.</div></div>
+        <div class="marca-card" onclick="selectMarca(this)">Mondelēz<div class="marca-sub">Mondelēz International</div></div>
+      </div>
+      <input type="hidden" name="marca_preferida" id="marca-val">
+    </div>
+
+    <!-- S5 -->
+    <div class="section-card">
+      <div class="section-label">🪙 Sección 5</div>
+      <div class="section-title">7. ¿Qué hace con la devuelta?</div>
+      <p class="hint">Suponga que va a la tienda de su barrio y después de su compra le dan una devuelta. Para cada moneda, indique qué haría.</p>
+      <div id="coins-container"></div>
+    </div>
+
+    <!-- S6 -->
+    <div class="section-card">
+      <div class="section-label">🏪 Sección 6</div>
+      <div class="section-title">8. ¿En qué lugares compra sus alimentos cotidianos?</div>
+      <p class="hint">Puedes seleccionar varias opciones</p>
+      <div class="lugar-grid">
+        <div class="lugar-card" onclick="toggleLugar(this,'lugar-val','Tienda de barrio')"><span class="lugar-icon">🏘️</span>Tienda de barrio</div>
+        <div class="lugar-card" onclick="toggleLugar(this,'lugar-val','Supermercado')"><span class="lugar-icon">🛒</span>Supermercado</div>
+        <div class="lugar-card" onclick="toggleLugar(this,'lugar-val','D1/ARA o similares')"><span class="lugar-icon">🏷️</span>D1 / ARA o similares</div>
+        <div class="lugar-card" onclick="toggleLugar(this,'lugar-val','Comercio electronico')"><span class="lugar-icon">📱</span>Comercio electrónico</div>
+      </div>
+      <input type="hidden" name="lugares_compra" id="lugar-val">
+    </div>
+
+    <!-- S7 -->
+    <div class="section-card">
+      <div class="section-label">🎯 Sección 7</div>
+      <div class="section-title">9. ¿Qué producto compraría con su devuelta?</div>
+      <p class="hint">Teniendo en cuenta las categorías de confitería, si tuviera estas devueltas, ¿qué compraría?</p>
+      <div class="ref-box">
+        <div class="ref-title">📋 Referencia de categorías y productos</div>
+        <div class="ref-cats" id="ref-cats"></div>
+      </div>
+      <div id="rangos-container"></div>
+    </div>
+
+    <!-- S8 -->
+    <div class="section-card">
+      <div class="section-label">💰 Sección 8</div>
+      <div class="section-title">10. ¿Cuánto pagaría como máximo por estos productos?</div>
+      <div id="grupos-container"></div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="button" class="btn-submit" onclick="submitForm()">Enviar respuestas 🍬</button>
+    </div>
+
+  </form>
+
+  <div class="success-screen" id="success">
+    <div class="success-icon">🎉</div>
+    <h2>¡Gracias por participar!</h2>
+    <p>Tu respuesta ha sido registrada. ¡Que sigan los dulces! 🍭</p>
+  </div>
+
+</div>
+
+<script>
+// Floating dots
+const dotsEl=document.getElementById('dots');
+const colors=['#E8354A','#FFD93D','#9B5DE5','#00BBD4','#FF6B35','#06D6A0','#F7A8B8'];
+for(let i=0;i<16;i++){
+  const d=document.createElement('div');d.className='dot';
+  const s=Math.random()*22+8;
+  d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100+100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*18+12}s;animation-delay:-${Math.random()*18}s;`;
+  dotsEl.appendChild(d);
+}
+
+const categorias={
+  'bombon-chicle':       {nombre:'Bombón con chicle',    prods:['Bon bon bum']},
+  'caramelo-leche':      {nombre:'Caramelo de leche',    prods:['Ricatto','Supercoco','Bigben','Coffe delight','Nucita']},
+  'bombon-sin-chicle':   {nombre:'Bombón sin chicle',    prods:['Tipitin','Supercoco','Pirulito']},
+  'caramelo-duro':       {nombre:'Caramelo duro',        prods:['Coffe delight','Fruticas','Minibum']},
+  'caramelo-masticable': {nombre:'Caramelo masticable',  prods:['Barrilete','Lokiño','Bobaloo sparkies','Max','Frunas','Yogger','Revolcón']},
+  'mentas':              {nombre:'Mentas',               prods:['Halls','Menta helada (SÚPER)','Chao','Menta helada (Colombina)']},
+  'turrones':            {nombre:'Turrones',             prods:['Supercoco']}
+};
+const rangos=['$100 – $200','$300 – $400','$500 – $600','$700 – $800','$900 – $1.000'];
+const precios=['$100 – $200','$300 – $400','$500 – $600','$700 – $800','$900 – $1.000'];
+const coins=['$100','$200','$500','$1.000'];
+const coinOpts=['Compro un confite','La ahorro','Compro una chocolatina','Compro una galleta','Compro un bocadillo / arequipe'];
+const grupos=[
+  {label:'Grupo 1',prods:['Lokiño','Yogger','Chao','Panelita pequeña','Cocada pequeña']},
+  {label:'Grupo 2',prods:['Bigben','Halls','Supercoco','Ricatto']},
+  {label:'Grupo 3',prods:['Bon bon bum','Chocolatina pequeña']},
+  {label:'Grupo 4',prods:['Chocolatina mediana','Burbujét','Galletas','Refresco pequeño']}
+];
+
+// Build ref cats
+const refCats=document.getElementById('ref-cats');
+Object.values(categorias).forEach(({nombre,prods})=>{
+  const d=document.createElement('div');d.className='ref-cat';
+  d.innerHTML=`<strong>${nombre}</strong>${prods.join(', ')}`;
+  refCats.appendChild(d);
+});
+
+// Build coins
+const coinsC=document.getElementById('coins-container');
+coins.forEach(coin=>{
+  const block=document.createElement('div');block.className='coin-block';
+  block.innerHTML=`<div class="coin-header"><span class="coin-badge">${coin}</span><span class="coin-q">¿Qué hace con esta devuelta?</span></div><div class="coin-opts">${coinOpts.map(op=>`<div class="resp-opt" onclick="selectCoin(this,'${coin}')"><div class="resp-dot"></div>${op}</div>`).join('')}</div><input type="hidden" name="devuelta_${coin.replace('.','')}" id="coin-${coin.replace('.','')}-val">`;
+  coinsC.appendChild(block);
+});
+
+// Build rangos
+const allProds=Object.entries(categorias).flatMap(([,{nombre,prods}])=>prods.map(p=>({nombre,p})));
+const rangosC=document.getElementById('rangos-container');
+rangos.forEach((rango,i)=>{
+  const block=document.createElement('div');block.className='rango-block';
+  let opts=`<option value="" disabled selected>Selecciona un producto</option>`;
+  let cur='';
+  allProds.forEach(({nombre,p})=>{
+    if(nombre!==cur){if(cur)opts+=`</optgroup>`;opts+=`<optgroup label="${nombre}">`;cur=nombre;}
+    opts+=`<option value="${p}">${p}</option>`;
+  });
+  opts+=`</optgroup>`;
+  block.innerHTML=`<div class="rango-header"><span class="rango-badge">${rango}</span><span class="rango-q">¿Qué producto compraría?</span></div><div class="rango-body"><select class="prod-select" name="rango_${i+1}" style="width:100%;height:44px;min-width:unset;">${opts}</select></div>`;
+  rangosC.appendChild(block);
+});
+
+// Build grupos precio
+const gruposC=document.getElementById('grupos-container');
+grupos.forEach(({label,prods})=>{
+  const block=document.createElement('div');block.className='grupo-block';
+  const rows=prods.map(p=>`<div class="prod-row"><span class="prod-name">${p}</span><select class="prod-select" name="precio_${p.replace(/\s+/g,'_').toLowerCase()}"><option value="" disabled selected>Selecciona</option>${precios.map(pr=>`<option value="${pr}">${pr}</option>`).join('')}</select></div>`).join('');
+  block.innerHTML=`<div class="grupo-header">${label}</div><div class="grupo-body">${rows}</div>`;
+  gruposC.appendChild(block);
+});
+
+// Interaction helpers
+const multiState={};
+const lugarState={};
+
+function selectOne(el,group){
+  el.closest('.estrato-group, .marca-grid') && el.closest('.estrato-group, .marca-grid').querySelectorAll('[class*="pill"],[class*="card"]').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  const hiddenId=group+'-val';
+  if(document.getElementById(hiddenId)) document.getElementById(hiddenId).value=el.textContent.trim();
+  updateProgress();
+}
+
+function selectMarca(el){
+  document.querySelectorAll('.marca-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('marca-val').value=el.firstChild.textContent.trim();
+  updateProgress();
+}
+
+function toggleMulti(el,hiddenId,val){
+  el.classList.toggle('selected');
+  updateMultiHidden(el.closest('.pill-group'),hiddenId);
+  updateProgress();
+}
+
+function toggleOtra(el,inputId,hiddenId,val){
+  el.classList.toggle('selected');
+  const visible=el.classList.contains('selected');
+  document.getElementById(inputId).classList.toggle('visible',visible);
+  updateMultiHidden(el.closest('.pill-group'),hiddenId);
+  updateProgress();
+}
+
+function updateMultiHidden(group,hiddenId){
+  if(!group||!hiddenId) return;
+  const vals=[...group.querySelectorAll('.selected')].map(e=>e.textContent.trim());
+  const el=document.getElementById(hiddenId);
+  if(el) el.value=vals.join(', ');
+}
+
+function selectCat(el,key){
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('cat-val').value=categorias[key].nombre;
+  const group=document.getElementById('prod-group');
+  group.innerHTML='';
+  categorias[key].prods.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='pill';d.textContent=p;
+    d.onclick=function(){
+      document.querySelectorAll('#prod-group .pill').forEach(x=>x.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('prod-val').value=p;
+      updateProgress();
+    };
+    group.appendChild(d);
+  });
+  document.getElementById('submenu').classList.add('visible');
+  updateProgress();
+}
+
+function selectCoin(el,coin){
+  el.closest('.coin-opts').querySelectorAll('.resp-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const id='coin-'+coin.replace('.','')+'-val';
+  const hidden=document.getElementById(id);
+  if(hidden) hidden.value=el.textContent.trim();
+  updateProgress();
+}
+
+function toggleLugar(el,hiddenId,val){
+  el.classList.toggle('selected');
+  const vals=[...document.querySelectorAll('.lugar-card.selected')].map(e=>e.querySelector(':not(.lugar-icon)') ? e.textContent.replace(/[🏘️🛒🏷️📱]/g,'').trim() : e.textContent.trim());
+  document.getElementById(hiddenId).value=vals.join(', ');
+  updateProgress();
+}
+
+function updateProgress(){
+  const total=10; let filled=0;
+  if(document.querySelector('.select[name="edad"]')?.value || document.getElementById('survey-form').querySelector('[name="edad"]')?.value) filled++;
+  if(document.getElementById('survey-form').querySelector('[name="genero"]')?.value) filled++;
+  if(document.getElementById('survey-form').querySelector('[name="ciudad"]')?.value) filled++;
+  if(document.getElementById('estrato-val')?.value) filled++;
+  if(document.getElementById('pago-val')?.value) filled++;
+  if(document.getElementById('cat-val')?.value) filled++;
+  if(document.getElementById('marca-val')?.value) filled++;
+  if(document.querySelector('.resp-opt.selected')) filled++;
+  if(document.querySelector('.lugar-card.selected')) filled++;
+  if(document.querySelector('.prod-select option:checked:not([disabled])')) filled++;
+  const pct=Math.round((filled/total)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent=`Completado: ${pct}%`;
+}
+
+document.getElementById('survey-form').addEventListener('change', updateProgress);
+document.getElementById('survey-form').addEventListener('input', updateProgress);
+
+async function submitForm(){
+  const form=document.getElementById('survey-form');
+  const data=new FormData(form);
+  try {
+    const res=await fetch(form.action,{method:'POST',body:data,headers:{'Accept':'application/json'}});
+    if(res.ok){
+      form.style.display='none';
+      document.querySelector('.progress-bar').style.display='none';
+      document.getElementById('success').classList.add('visible');
+    } else {
+      alert('Hubo un error al enviar. Verifica tu conexión e intenta de nuevo.');
+    }
+  } catch(e){
+    alert('Hubo un error al enviar. Verifica tu conexión e intenta de nuevo.');
+  }
+}
+</script>
+</body>
+</html>
